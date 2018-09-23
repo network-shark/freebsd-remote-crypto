@@ -220,8 +220,26 @@ echo 'run "killall dropbear" instead to continue boot'
 echo ""
 )> $dst/etc/motd
 
+if [ -f $src/usr/local/sbin/dropbear ] ; then
+	cp $src/etc/hosts $src/etc/hosts.org
+	echo $(host -4 -t A pkg.freebsd.org | awk '/has address/ { print $4 }') pkg.freebsd.org >> /mnt/etc/hosts
+	LANG= chroot /mnt /bin/sh
+	ASSUME_ALWAYS_YES=yes pkg bootstrap
+	pkg install dropbear
+	pkg lock -y dropbear
+	exit
+	cp $src/etc/hosts.org $src/etc/hosts
+	rm $src/etc/hosts.org
+fi
 
-dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_ecdsa_key $dst/etc/dropbear_host_key
+#produces error message bad key type 90
+#$src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_ecdsa_key $dst/etc/dropbear_host_key
+$src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_rsa_key $dst/etc/dropbear_host_key
 cp $src/usr/local/sbin/dropbear $dst/sbin/
 pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
+mkdir -p $dst/root/.ssh
+echo ""
+echo DON'T FORGET TO COPY YOUR PUBLIC KEY TO $dst/root/.ssh/authorized_keys
+echo DON'T FORGET TO SET A ROOT PASSWORD
+echo ""
 touch $dst/PREBOOT
