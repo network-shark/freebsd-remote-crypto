@@ -237,9 +237,9 @@ fi
 #$src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_ecdsa_key $dst/etc/dropbear_host_key
 $src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_rsa_key $dst/etc/dropbear_host_key
 cp $src/usr/local/sbin/dropbear $dst/sbin/
-pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
+#pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
 mkdir -p $dst/root/.ssh
 echo ""
-echo "DON'T FORGET TO COPY YOUR PUBLIC KEY TO $dst/root/.ssh/authorized_keys"
+echo "DON'T FORGET TO COPY YOUR RSA SSH PUBLIC KEY TO $dst/root/.ssh/authorized_keys"
 echo ""
 touch $dst/PREBOOT
