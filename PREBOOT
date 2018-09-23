@@ -220,14 +220,15 @@ echo 'run "killall dropbear" instead to continue boot'
 echo ""
 )> $dst/etc/motd
 
-if [ -f $src/usr/local/sbin/dropbear ] ; then
+if [ ! -f $src/usr/local/sbin/dropbear ] ; then
 	cp $src/etc/hosts $src/etc/hosts.org
 	echo $(host -4 -t A pkg.freebsd.org | awk '/has address/ { print $4 }') pkg.freebsd.org >> /mnt/etc/hosts
-	LANG= chroot /mnt /bin/sh
-	ASSUME_ALWAYS_YES=yes pkg bootstrap
-	pkg install dropbear
-	pkg lock -y dropbear
-	exit
+	LANG= ASSUME_ALWAYS_YES=yes chroot /mnt pkg install dropbear
+	LANG= ASSUME_ALWAYS_YES=yes chroot /mnt pkg lock -y dropbear
+	echo ""
+	echo "DON'T FORGET TO SET A ROOT PASSWORD"
+	echo ""
+	LANG= ASSUME_ALWAYS_YES=yes chroot /mnt passwd
 	cp $src/etc/hosts.org $src/etc/hosts
 	rm $src/etc/hosts.org
 fi
@@ -239,7 +240,6 @@ cp $src/usr/local/sbin/dropbear $dst/sbin/
 pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
 mkdir -p $dst/root/.ssh
 echo ""
-echo DON'T FORGET TO COPY YOUR PUBLIC KEY TO $dst/root/.ssh/authorized_keys
-echo DON'T FORGET TO SET A ROOT PASSWORD
+echo "DON'T FORGET TO COPY YOUR PUBLIC KEY TO $dst/root/.ssh/authorized_keys"
 echo ""
 touch $dst/PREBOOT
