@@ -241,6 +241,9 @@ echo ""
 LANG= ASSUME_ALWAYS_YES=yes chroot /mnt passwd
 
 mkdir -p $dst/root/.ssh
+chmod 700 $dst/root/.ssh
+touch $dst/root/.ssh/authorized_keys
+chmod 600 $dst/root/.ssh/authorized_keys
 echo ""
 echo "DON'T FORGET TO COPY YOUR RSA SSH PUBLIC KEY TO $dst/root/.ssh/authorized_keys"
 echo ""
