@@ -225,10 +225,6 @@ if [ ! -f $src/usr/local/sbin/dropbear ] ; then
 	echo $(host -4 -t A pkg.freebsd.org | awk '/has address/ { print $4 }') pkg.freebsd.org >> /mnt/etc/hosts
 	LANG= ASSUME_ALWAYS_YES=yes chroot /mnt pkg install dropbear
 	LANG= ASSUME_ALWAYS_YES=yes chroot /mnt pkg lock -y dropbear
-	echo ""
-	echo "DON'T FORGET TO SET A ROOT PASSWORD"
-	echo ""
-	LANG= ASSUME_ALWAYS_YES=yes chroot /mnt passwd
 	cp $src/etc/hosts.org $src/etc/hosts
 	rm $src/etc/hosts.org
 fi
@@ -237,7 +233,13 @@ fi
 #$src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_ecdsa_key $dst/etc/dropbear_host_key
 $src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_rsa_key $dst/etc/dropbear_host_key
 cp $src/usr/local/sbin/dropbear $dst/sbin/
-#pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
+pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
+
+echo ""
+echo "DON'T FORGET TO SET A ROOT PASSWORD"
+echo ""
+LANG= ASSUME_ALWAYS_YES=yes chroot /mnt passwd
+
 mkdir -p $dst/root/.ssh
 echo ""
 echo "DON'T FORGET TO COPY YOUR RSA SSH PUBLIC KEY TO $dst/root/.ssh/authorized_keys"
