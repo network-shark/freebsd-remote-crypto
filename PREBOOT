@@ -233,7 +233,7 @@ fi
 #$src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_ecdsa_key $dst/etc/dropbear_host_key
 $src/usr/local/bin/dropbearconvert openssh dropbear $src/etc/ssh/ssh_host_rsa_key $dst/etc/dropbear_host_key
 cp $src/usr/local/sbin/dropbear $dst/sbin/
-cp $src/usr/local/sbin/dbclient $dst/sbin/
+cp $src/usr/local/bin/dbclient $dst/sbin/
 pwd_mkdb -p -d $dst/etc $dst/etc/master.passwd
 
 echo ""
